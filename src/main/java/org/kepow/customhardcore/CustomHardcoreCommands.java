@@ -284,6 +284,11 @@ public class CustomHardcoreCommands
     @Command(aliases={"banish", "b"}, desc="Banish a player", usage="<player> - player to banish. [group] - The group to banish the player from.", min = 1, max = 2)
     public static void banish(final CommandContext args, CommandSender sender) throws Exception 
     {
+        if(!sender.hasPermission("customhardcore.admin"))
+        {
+            throw(new CommandPermissionsException());
+        }
+        
         String targetPlayerString = args.getString(0);
         Player targetPlayer = getPlayer(sender, targetPlayerString);
         
@@ -310,6 +315,11 @@ public class CustomHardcoreCommands
     @Command(aliases={"unbanish", "unb", "u"}, desc="Unbanish a player", usage="<player> - player to banish. [group] - The group to unbanish the player from.", min = 1, max = 2)
     public static void unbanish(final CommandContext args, CommandSender sender) throws Exception 
     {
+        if(!sender.hasPermission("customhardcore.admin"))
+        {
+            throw(new CommandPermissionsException());
+        }
+        
         String targetPlayerString = args.getString(0);
         Player targetPlayer = getPlayer(sender, targetPlayerString);
         
