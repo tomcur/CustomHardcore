@@ -1,0 +1,15 @@
+/.classpath
+/.project
+/.settings
+/target
+/.m2
+
+/doc
+*.jar
+.DS_Store
+/*.iml
+/.idea
+
+/bin
+/dependency-reduced-pom.xml
+*-private.sh

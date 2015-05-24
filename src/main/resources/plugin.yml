@@ -1,0 +1,38 @@
+name: CustomHardcore
+main: org.kepow.customhardcore.CustomHardcore
+version: 1.0
+description: Customizable per-worldgroup hardcore settings.
+author: Beskhue
+authors: [Beskhue]
+softdepend: [Multiverse-Core]
+commands:
+  chc:
+    description: Perform CustomHardcore commands. Type '/chc' for more information. 
+    usage: /chc <command>
+permissions:
+  customhardcore.*:
+    description: Gives access to all CustomHardcore commands and bypasses.
+    children:
+      customhardcore.info: true
+      customhardcore.list: true
+      customhardcore.admin: true
+  customhardcore.info.*:
+    description: Gives permission to view hardcore info.
+    default: true
+    children:
+      customhardcore.info.player: true
+      customhardcore.info.group: true
+      customhardcore.info.list: true
+  customhardcore.info.player:
+    description: Gives permission to view player hardcore info.
+  customhardcore.info.group:
+    description: Gives permission to view group hardcore info.
+  customhardcore.info.list:
+    description: Gives permission to list hardcore groups.
+  customhardcore.list:
+    description: Gives access to list the world group hardcore settings.
+    default: true
+  customhardcore.admin:
+    description: Gives permission to perform admin commands.
+    default: op
+

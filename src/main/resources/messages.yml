@@ -1,0 +1,60 @@
+display:
+    numberOfDecimals: 2
+words:
+    player:
+        self: "You"
+        other: "&3%player&r"
+    is:
+        self: "are"
+        other: "is"
+    has:
+        self: "have"
+        other: "has"
+    banishedUntil:
+        other: "&6%year-%month-%day %hours:%minutes:%seconds&r"
+    worldGroup:
+        other: "&3%worldGroupAlias&r"
+    world:
+        other: "&6%world&r"
+    hardcore:
+        true: "&6Yes&r"
+        other: "&6No&r"
+    lives:
+        other: "&6%lives&r"
+    livesWord:
+        1: "life"
+        other: "lives"
+    banishTime:
+        other: "&6%banishTime&r"
+    days:
+        1: "day"
+        other: "days"
+    banishedTime:
+        other: "&6%days&r"
+        
+messages:
+    commands:
+        banishInfoBanishedHeader: "&player|who% &is|who% banished from the following worlds:"
+        banishInfoBanishedEntry: "- &worldGroup% until &banishedUntil%"
+        banishInfoNotBanished: "&player|who% &is|who% not banished from any worlds." 
+        hardcoreGroupsNoGroups: "There are no hardcore world groups."
+        hardcoreGroupsHeader: "The following world groups are set to hardcore mode:"
+        hardcoreGroupsEntry: "- &worldGroup% &o&7(%worldGroup)"
+        groupInfoHeader: "&worldGroup% settings:"
+        groupInfoHardcore: "- Hardcore: &hardcore|hardcore%"
+        groupInfoLives: "- Lives: &lives%"
+        groupWorldsNoWorlds: "&worldGroup% has no worlds associated with it."
+        groupWorldsIsDefault: "&worldGroup% is the default world group; all worlds not associated with other groups are assigned to it."
+        groupWorldsHeader: "&worldGroup% has the following worlds associated with it:"
+        groupWorldsEntry: "- &world%" 
+        banishTime: "- Banish time: &banishTime% &days|banishTime%"
+        livesInfoHeader: "&player|who% &has|who% the following lives remaining:"
+        livesInfoEntry: "- &worldGroup%: &lives% &livesWord|lives%" 
+        banish: "You successfully banished &player% from &worldGroup%."
+        unbanish: "You successfully unbanished &player% from &worldGroup%." 
+    broadcasts:
+        banished: "&player% has been banished for &banishedTime% &days|days% from &worldGroup%.\n&player% can join again after &banishedUntil%."
+        died: "&player% has &lives% &livesWord|lives% remaining in &worldGroup%."
+    whispers:
+        banished: "You are banished from &worldGroup% until &banishedUntil%."
+        

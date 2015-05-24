@@ -1,0 +1,22 @@
+timezone: "Europe/Amsterdam"
+worldConfig:
+    groups:
+        default:
+            alias: Default
+            config:
+                enabled: false
+                lives: 1
+                banishTime: 3.0
+                banishLocation:
+                    world: world
+                    x: 240.5
+                    y: 65.0
+                    z: 272.0
+        hardcoreGroup:
+            alias: Hardcore Worlds
+            worlds:
+            - HardcoreWorld
+            - HardcoreWorld_nether
+            - HardcoreWorld_the_end
+            config:
+                enabled: true
