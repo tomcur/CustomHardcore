@@ -310,17 +310,44 @@ public class WorldManager implements ConfigurationSerializable
         {
             Date date = new Date(this.banishedUntil(player)*1000);
             Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getTimeZone(PluginState.getPlugin().getConfig().getString("timezone")));
             calendar.setTime(date);
             
+            String year = calendar.get(Calendar.YEAR)+"";
+            String month = (calendar.get(Calendar.MONTH)+1)+"";
+            if(month.length() == 1)
+            {
+                month = "0"+month;
+            }
+            String day = calendar.get(Calendar.DAY_OF_MONTH)+"";
+            if(day.length()==1)
+            {
+                day = "0"+day;
+            }
+            String hours = calendar.get(Calendar.HOUR_OF_DAY)+"";
+            if(hours.length()==1)
+            {
+                hours = "0"+hours;
+            }
+            String minutes = calendar.get(Calendar.MINUTE)+"";
+            if(minutes.length()==1)
+            {
+                minutes = "0"+minutes;
+            }
+            String seconds = calendar.get(Calendar.SECOND)+"";
+            if(seconds.length()==1)
+            {
+                seconds = "0"+seconds;
+            }
             player.sendMessage(Utils.prepareMessage("whispers.banished", 
                 "%worldGroup", this.getWorldGroup(),
                 "%worldGroupAlias", this.getWorldGroupAlias(),
-                "%year", calendar.get(Calendar.YEAR),
-                "%month", calendar.get(Calendar.MONTH)+1,
-                "%day", calendar.get(Calendar.DAY_OF_MONTH),
-                "%hours", calendar.get(Calendar.HOUR_OF_DAY),
-                "%minutes", calendar.get(Calendar.MINUTE),
-                "%seconds", calendar.get(Calendar.SECOND)));
+                "%year", year,
+                "%month", month,
+                "%day", day,
+                "%hours", hours,
+                "%minutes", minutes,
+                "%seconds", seconds));
             
             if(event == null)
             {

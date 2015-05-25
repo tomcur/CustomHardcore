@@ -29,9 +29,6 @@ permissions:
     description: Gives permission to view group hardcore info.
   customhardcore.info.list:
     description: Gives permission to list hardcore groups.
-  customhardcore.list:
-    description: Gives access to list the world groups.
-    default: true
   customhardcore.admin:
     description: Gives permission to perform admin commands.
     default: op
