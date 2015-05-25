@@ -21,8 +21,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.sk89q.bukkit.util.CommandsManagerRegistration;
 import com.sk89q.minecraft.util.commands.ChatColor;
 import com.sk89q.minecraft.util.commands.CommandException;
@@ -31,7 +29,6 @@ import com.sk89q.minecraft.util.commands.CommandUsageException;
 import com.sk89q.minecraft.util.commands.CommandsManager;
 import com.sk89q.minecraft.util.commands.MissingNestedCommandException;
 import com.sk89q.minecraft.util.commands.WrappedCommandException;
-
 
 /**
  * Main class of the plugin.
@@ -43,7 +40,7 @@ public class CustomHardcore extends JavaPlugin implements Listener
 {
     private Map<String, WorldManager> worldManagers;
     private CommandsManager<CommandSender> commands;
-    private MVWorldManager mvWorldManager;
+    private JavaPlugin multiverseCore;
     
     /**
      * Called when the plugin has been loaded and is enabled.
@@ -105,8 +102,9 @@ public class CustomHardcore extends JavaPlugin implements Listener
         JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
         if(plugin != null)
         {
-            MultiverseCore mv = (MultiverseCore) plugin;
-            mvWorldManager = mv.getMVWorldManager();
+            //MultiverseCore mv = (MultiverseCore) plugin;
+            multiverseCore = plugin;
+            //mvWorldManager = mv.getMVWorldManager();
             
         }
         // Set up scheduled task
@@ -121,12 +119,12 @@ public class CustomHardcore extends JavaPlugin implements Listener
     }
     
     /**
-     * Gets the Multiverse World Manager.
-     * @return The Multiverse World Manager.
+     * Gets the Multiverse Core plugin.
+     * @return The Multiverse Core plugin.
      */
-    public MVWorldManager getMVWorldManager()
+    public JavaPlugin getMultiverseCore()
     {
-        return mvWorldManager;
+        return multiverseCore;
     }
     
     /**

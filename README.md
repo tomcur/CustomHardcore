@@ -1,5 +1,5 @@
 # CustomHardcore
-CustomHardcore is a [Craft]bukkit/Spigot plugin providing highly customizable support for creating custom hardcore world setups. It allows creation of multiple hardcore world groups that are kept track of separately. Each group can have its own configuration.
+CustomHardcore is a [Craft]bukkit/Spigot plugin providing highly customizable support for creating custom hardcore world setups. It allows creation of multiple hardcore world groups that are kept track of separately. Each group can have its own configuration. When a player is banished, they will be teleported to a specified location in a different world.
 
 ### Configuration
 A configuration can look like this.
@@ -28,7 +28,7 @@ worldConfig:
                 enabled: true
 ```
 
-Use the `timezone` key to specify your server's timezone. These correspond with the timezones found [here](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+Use the `timezone` key to specify your server's time zone. These correspond to the time zones found [here](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
 Next, `worldConfig.groups` defines the hardcore groups that will be used on your server. It is a mapping of group names and those groups' settings. Each group can have an alias (`alias`), a list of worlds (`worlds`) and a group configuration (`config`). All keys are optional.
 

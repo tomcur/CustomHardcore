@@ -11,14 +11,10 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.onarandombox.MultiverseCore.MVWorld;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissionsException;
-import com.sk89q.minecraft.util.commands.CommandUsageException;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 
 
@@ -183,8 +179,6 @@ public class CustomHardcoreCommands
             
             for(WorldManager worldManager : hardcoreManagers.values())
             {
-                Date date = new Date(worldManager.banishedUntil(targetPlayer)*1000);
-
                 sender.sendMessage(Utils.prepareMessage("commands.livesInfoEntry", 
                     "%worldGroup", worldManager.getWorldGroup(),
                     "%worldGroupAlias", worldManager.getWorldGroupAlias(),
@@ -258,15 +252,13 @@ public class CustomHardcoreCommands
                 "%worldGroup", target,
                 "%worldGroupAlias", PluginState.getWorldConfig().getGroupAlias(target)));
             
-            MVWorldManager mvWorldManager = PluginState.getPlugin().getMVWorldManager();
             for(String world : worlds)
             {
                 if(PluginState.getPlugin().getServer().getWorld(world) != null)
                 {
-                    if(mvWorldManager != null)
+                    if(PluginState.getPlugin().getMultiverseCore() != null)
                     {
-                        MultiverseWorld mvWorld = mvWorldManager.getMVWorld(world);
-                        String alias = mvWorld.getColoredWorldString();
+                        String alias = MultiverseWrapper.getAlias(world);
                         
                         sender.sendMessage(Utils.prepareMessage("commands.groupWorldsEntry", 
                             "%world", alias));
