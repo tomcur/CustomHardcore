@@ -55,21 +55,21 @@ __Note__: The default group, `worldConfig.groups.default`, must always be presen
  - Permissions: `customhardcore.info.list` _(Default: true)_
 - `/chc lives [player]`: Get the number of lives a player has left in the hardcore groups.
  - Aliases: `/chc l`
- - Permissions: `customhardcore.info.player` _(default: true)_ to be able to perform the command on a target.
+ - Permissions: `customhardcore.info.player` _(Default: true)_ to be able to perform the command on a target.
 - `/chc groupinfo [group]`: See the configuration of a world group
  - Aliases: `/chc ginfo`, `/chc gi`
- - Permissions: `customhardcore.info.group` _(default: true)_
+ - Permissions: `customhardcore.info.group` _(Default: true)_
 - `/chc worlds [group]`: See the worlds that belong to a world group.
  - Aliases: `/chc w`
- - Permissions: `customhardcore.info.group` _(default: true)_
+ - Permissions: `customhardcore.info.group` _(Default: true)_
 - `/chc banish <player> [group]`: Banish a player from a group.
  - Aliases: `/chc b`
- - Permissions: `customhardcore.admin` _(default: op)_
+ - Permissions: `customhardcore.admin` _(Default: op)_
 - `/chc unbanish <player> [group]`: Unbanish a player from a group.
  - Aliases: `/chc unb`, `/chc u`
- - Permissions: `customhardcore.admin` _(default: op)_
+ - Permissions: `customhardcore.admin` _(Default: op)_
 
-For all commands where `player` is optional, the command will target the sender. For all commands where `group` is optional, the command will target the world group the sender is currently in.
+For all commands where `player` is optional, the command will target the sender if no player is specified. For all commands where `group` is optional, the command will target the world group the sender is currently in if no world group is specified.
 
 ### Multiverse
 The plugin has optional Multiverse integration. If Multiverse is enabled on your server, world names will be styled in accordance with your Multiverse world alias settings.
