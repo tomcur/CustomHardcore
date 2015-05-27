@@ -1,8 +1,11 @@
 package org.kepow.customhardcore;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,6 +67,58 @@ public class Utils
         double tenToTheD = Math.pow(10, decimals);
         return Math.round(d * tenToTheD) / tenToTheD;
     }
+    
+    /**
+     * Prepare time strings.
+     * @param t The unix time in seconds to set the strings to.
+     * @param year The year representing the time.
+     * @param month The month representing the time.
+     * @param day The day representing the time.
+     * @param hour The hour representing the time.
+     * @param minute The minute representing the time.
+     * @param second The second representing the time.
+     */
+    public static void prepareTimeStrings(long t, StringBuilder year, StringBuilder month, StringBuilder day, 
+        StringBuilder hour, StringBuilder minute, StringBuilder second)
+    {
+        Date date = new Date(t*1000L);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone(PluginState.getPlugin().getConfig().getString("timezone")));
+        calendar.setTime(date);
+        
+        year.append(calendar.get(Calendar.YEAR));
+        
+        month.append(calendar.get(Calendar.MONTH)+1);
+        if(month.length() == 1)
+        {
+            month.insert(0, "0");
+        }
+        
+        day.append(calendar.get(Calendar.DAY_OF_MONTH));
+        if(day.length() == 1)
+        {
+            day.insert(0, "0");
+        }
+        
+        hour.append(calendar.get(Calendar.HOUR_OF_DAY));
+        if(hour.length() == 1)
+        {
+            hour.insert(0, "0");
+        }
+        
+        minute.append(calendar.get(Calendar.MINUTE));
+        if(minute.length() == 1)
+        {
+            minute.insert(0, "0");
+        }
+        
+        second.append(calendar.get(Calendar.SECOND));
+        if(second.length()==1)
+        {
+            second.insert(0, "0");
+        }
+    }
+    
     
     /**
      * Prepare a message string for outputting.

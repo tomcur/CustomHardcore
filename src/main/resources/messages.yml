@@ -12,6 +12,8 @@ words:
         other: "has"
     banishedUntil:
         other: "&6%year-%month-%day %hours:%minutes:%seconds&r"
+    date:
+        other: "&6%year-%month-%day %hours:%minutes:%seconds&r"
     worldGroup:
         other: "&3%worldGroupAlias&r"
     world:
@@ -49,7 +51,8 @@ messages:
         groupWorldsEntry: "- &world%" 
         banishTime: "- Banish time: &banishTime% &days|banishTime%"
         livesInfoHeader: "&player|who% &has|who% the following lives remaining:"
-        livesInfoEntry: "- &worldGroup%: &lives% &livesWord|lives%" 
+        livesInfoEntry: "- &worldGroup%: &lives% &livesWord|lives%"
+        livesInfoRegenerationEntry: "  - &61&r life regenerates at &date%"  
         banish: "You successfully banished &player% from &worldGroup%."
         unbanish: "You successfully unbanished &player% from &worldGroup%." 
     broadcasts:

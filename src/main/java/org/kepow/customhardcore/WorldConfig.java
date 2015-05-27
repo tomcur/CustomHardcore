@@ -200,7 +200,8 @@ public class WorldConfig
      * Get whether hardcore mode is enabled for the group.
      * @param group The group to get hardcore mode status for.
      * @return True if hardcore is enabled for the group, false if it is disabled, 
-     * or the same for the default group if the group has no option set. 
+     * or the same for the default group if the group has no option set, or the
+     * hard-coded default if the default group does not have the option specified. 
      */
     public boolean getEnabled(String group)
     {
@@ -211,7 +212,8 @@ public class WorldConfig
      * Get the number of lives configured for this world group.
      * @param group The group to get the number of lives for.
      * @return The number of lives on the group, or that of the default group
-     * if the group does not have the option specified.
+     * if the group does not have the option specified, or the
+     * hard-coded default if the default group does not have the option specified.
      */
     public int getLives(String group)
     {
@@ -222,7 +224,8 @@ public class WorldConfig
      * Get the banish time configured for this world group.
      * @param group The group to get the banish time for.
      * @return The banish time on the group, or that of the default group
-     * if the group does not have the option specified.
+     * if the group does not have the option specified, or the
+     * hard-coded default if the default group does not have the option specified.
      */
     public double getBanishTime(String group)
     {
@@ -230,10 +233,23 @@ public class WorldConfig
     }
     
     /**
+     * Get the life regeneration time configured for this world group.
+     * @param group The group to get the life regeneration time for.
+     * @return The life regeneration time configured for the group, or that of the
+     * default group if the group does not have the option specified, or the
+     * hard-coded default if the default group does not have the option specified.
+     */
+    public double getLifeRegenerationTime(String group)
+    {
+        return this.get(group, "lifeRegenerationTime", Default.VALUES);
+    }
+    
+    /**
      * Get the banish location configured for this world group.
      * @param group The group to get the banish location for.
      * @return The banish location on the group, or that of the default group
-     * if the group does not have the option specified.
+     * if the group does not have the option specified, or the
+     * hard-coded default if the default group does not have the option specified.
      */
     public Location getBanishLocation(String group)
     {

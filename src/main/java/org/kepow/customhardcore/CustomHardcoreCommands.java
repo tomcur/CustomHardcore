@@ -73,37 +73,13 @@ public class CustomHardcoreCommands
             
             for(WorldManager worldManager : banished)
             {
-                Date date = new Date(worldManager.banishedUntil(targetPlayer)*1000);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeZone(TimeZone.getTimeZone(PluginState.getPlugin().getConfig().getString("timezone")));
-                calendar.setTime(date);
-                
-                String year = calendar.get(Calendar.YEAR)+"";
-                String month = (calendar.get(Calendar.MONTH)+1)+"";
-                if(month.length() == 1)
-                {
-                    month = "0"+month;
-                }
-                String day = calendar.get(Calendar.DAY_OF_MONTH)+"";
-                if(day.length()==1)
-                {
-                    day = "0"+day;
-                }
-                String hours = calendar.get(Calendar.HOUR_OF_DAY)+"";
-                if(hours.length()==1)
-                {
-                    hours = "0"+hours;
-                }
-                String minutes = calendar.get(Calendar.MINUTE)+"";
-                if(minutes.length()==1)
-                {
-                    minutes = "0"+minutes;
-                }
-                String seconds = calendar.get(Calendar.SECOND)+"";
-                if(seconds.length()==1)
-                {
-                    seconds = "0"+seconds;
-                }
+                StringBuilder year = new StringBuilder();
+                StringBuilder month = new StringBuilder();
+                StringBuilder day = new StringBuilder();
+                StringBuilder hour = new StringBuilder();
+                StringBuilder minute = new StringBuilder();
+                StringBuilder second = new StringBuilder();
+                Utils.prepareTimeStrings(worldManager.banishedUntil(targetPlayer), year, month, day, hour, minute, second);
                 
                 sender.sendMessage(Utils.prepareMessage("commands.banishInfoBanishedEntry", 
                     "%worldGroup", worldManager.getWorldGroup(),
@@ -111,9 +87,9 @@ public class CustomHardcoreCommands
                     "%year", year,
                     "%month", month,
                     "%day", day,
-                    "%hours", hours,
-                    "%minutes", minutes,
-                    "%seconds", seconds));
+                    "%hours", hour,
+                    "%minutes", minute,
+                    "%seconds", second));
             }
         }
     }
@@ -183,6 +159,32 @@ public class CustomHardcoreCommands
                     "%worldGroup", worldManager.getWorldGroup(),
                     "%worldGroupAlias", worldManager.getWorldGroupAlias(),
                     "%lives", worldManager.getLivesLeft(targetPlayer)));
+                if(worldManager.isRegenerationEnabled())
+                {
+                    long regenerationAt = worldManager.regenerationAt(targetPlayer);
+                    
+                    if(regenerationAt != -1)
+                    {
+                        StringBuilder year = new StringBuilder();
+                        StringBuilder month = new StringBuilder();
+                        StringBuilder day = new StringBuilder();
+                        StringBuilder hour = new StringBuilder();
+                        StringBuilder minute = new StringBuilder();
+                        StringBuilder second = new StringBuilder();
+                        Utils.prepareTimeStrings(regenerationAt, year, month, day, hour, minute, second);
+                        
+                        sender.sendMessage(Utils.prepareMessage("commands.livesInfoRegenerationEntry", 
+                            "%worldGroup", worldManager.getWorldGroup(),
+                            "%worldGroupAlias", worldManager.getWorldGroupAlias(),
+                            "%lives", worldManager.getLivesLeft(targetPlayer),
+                            "%year", year,
+                            "%month", month,
+                            "%day", day,
+                            "%hours", hour,
+                            "%minutes", minute,
+                            "%seconds", second));
+                    }
+                }
             }
         }
     }

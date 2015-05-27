@@ -1,6 +1,6 @@
 name: CustomHardcore
 main: org.kepow.customhardcore.CustomHardcore
-version: 1.0
+version: 1.1
 description: Customizable per-worldgroup hardcore settings.
 author: Beskhue
 authors: [Beskhue]
