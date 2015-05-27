@@ -1,10 +1,7 @@
 package org.kepow.customhardcore;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -26,13 +23,17 @@ public class WorldManager implements ConfigurationSerializable
     private final String worldGroup;
     
     private final boolean enabled;
+    private final boolean regeneration;
     private final int numLives;
     private final double banishTime;
+    private final double regenerationTime;
     private final Location banishLocation;
     
     private final Map<OfflinePlayer, Long> banishedUntil;
+    private final Map<OfflinePlayer, Long> regenerationStartTime;
     private final Map<OfflinePlayer, Integer> deaths;
 
+    
     /**
      * Constructor.
      * @param worldGroup The world group this manager is for.
@@ -45,9 +46,12 @@ public class WorldManager implements ConfigurationSerializable
         numLives = PluginState.getWorldConfig().getLives(worldGroup);
         banishTime = PluginState.getWorldConfig().getBanishTime(worldGroup);
         banishLocation = PluginState.getWorldConfig().getBanishLocation(worldGroup);
+        regenerationTime = PluginState.getWorldConfig().getLifeRegenerationTime(worldGroup);
+        regeneration = (regenerationTime > 0);
         
         deaths = new HashMap<OfflinePlayer, Integer>();
         banishedUntil = new HashMap<OfflinePlayer, Long>();
+        regenerationStartTime = new HashMap<OfflinePlayer, Long>();
     }
     
     /**
@@ -62,22 +66,42 @@ public class WorldManager implements ConfigurationSerializable
         numLives = PluginState.getWorldConfig().getLives(worldGroup);
         banishTime = PluginState.getWorldConfig().getBanishTime(worldGroup);
         banishLocation = PluginState.getWorldConfig().getBanishLocation(worldGroup);
+        regenerationTime = PluginState.getWorldConfig().getLifeRegenerationTime(worldGroup);
+        regeneration = (regenerationTime > 0);
         
         this.banishedUntil = new HashMap<OfflinePlayer, Long>();
+        this.regenerationStartTime = new HashMap<OfflinePlayer, Long>();
         this.deaths = new HashMap<OfflinePlayer, Integer>();
+        
         Map<String, Long> banishedUntil = (Map<String, Long>) mapO.get("banishedUntil");
+        Map<String, Long> regenerationStartTime = (Map<String, Long>) mapO.get("regenerationStartTime");
         Map<String, Integer> deaths = (Map<String, Integer>) mapO.get("deaths");
         
-        for(String uuid : banishedUntil.keySet())
+        if(banishedUntil != null)
         {
-            UUID u = UUID.fromString(uuid);
-            this.banishedUntil.put(PluginState.getPlugin().getServer().getOfflinePlayer(u), ((Number) banishedUntil.get(uuid)).longValue());
+            for(String uuid : banishedUntil.keySet())
+            {
+                UUID u = UUID.fromString(uuid);
+                this.banishedUntil.put(PluginState.getPlugin().getServer().getOfflinePlayer(u), ((Number) banishedUntil.get(uuid)).longValue());
+            }
         }
         
-        for(String uuid : deaths.keySet())
+        if(deaths != null)
         {
-            UUID u = UUID.fromString(uuid);
-            this.deaths.put(PluginState.getPlugin().getServer().getOfflinePlayer(u), deaths.get(uuid));
+            for(String uuid : deaths.keySet())
+            {
+                UUID u = UUID.fromString(uuid);
+                this.deaths.put(PluginState.getPlugin().getServer().getOfflinePlayer(u), deaths.get(uuid));
+            }
+        }
+        
+        if(regenerationStartTime != null)
+        {
+            for(String uuid : regenerationStartTime.keySet())
+            {
+                UUID u = UUID.fromString(uuid);
+                this.regenerationStartTime.put(PluginState.getPlugin().getServer().getOfflinePlayer(u), regenerationStartTime.get(uuid));
+            }
         }
     }
     
@@ -118,13 +142,15 @@ public class WorldManager implements ConfigurationSerializable
             return;
         }
         
+        int livesLeft = this.getLivesLeft(player);
         if(!deaths.containsKey(player))
         {
             deaths.put(player, 0);
         }
         int deaths = this.deaths.get(player) + 1;
+        --livesLeft;
         
-        if(deaths >= this.numLives)
+        if(livesLeft <= 0)
         {
             this.banish(player);
             
@@ -132,37 +158,13 @@ public class WorldManager implements ConfigurationSerializable
             player.getWorld().strikeLightningEffect(player.getLocation());
             
             // Message
-            Date date = new Date(this.banishedUntil(player)*1000);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeZone(TimeZone.getTimeZone(PluginState.getPlugin().getConfig().getString("timezone")));
-            calendar.setTime(date);
-            
-            String year = calendar.get(Calendar.YEAR)+"";
-            String month = (calendar.get(Calendar.MONTH)+1)+"";
-            if(month.length() == 1)
-            {
-                month = "0"+month;
-            }
-            String day = calendar.get(Calendar.DAY_OF_MONTH)+"";
-            if(day.length()==1)
-            {
-                day = "0"+day;
-            }
-            String hours = calendar.get(Calendar.HOUR_OF_DAY)+"";
-            if(hours.length()==1)
-            {
-                hours = "0"+hours;
-            }
-            String minutes = calendar.get(Calendar.MINUTE)+"";
-            if(minutes.length()==1)
-            {
-                minutes = "0"+minutes;
-            }
-            String seconds = calendar.get(Calendar.SECOND)+"";
-            if(seconds.length()==1)
-            {
-                seconds = "0"+seconds;
-            }
+            StringBuilder year = new StringBuilder();
+            StringBuilder month = new StringBuilder();
+            StringBuilder day = new StringBuilder();
+            StringBuilder hour = new StringBuilder();
+            StringBuilder minute = new StringBuilder();
+            StringBuilder second = new StringBuilder();
+            Utils.prepareTimeStrings(this.banishedUntil(player), year, month, day, hour, minute, second);
             
             String message = event.getDeathMessage() + "\n" + Utils.prepareMessage("broadcasts.banished", 
                 "%worldGroup", this.getWorldGroup(),
@@ -172,14 +174,19 @@ public class WorldManager implements ConfigurationSerializable
                 "%year", year,
                 "%month", month,
                 "%day", day,
-                "%hours", hours,
-                "%minutes", minutes,
-                "%seconds", seconds);
+                "%hours", hour,
+                "%minutes", minute,
+                "%seconds", second);
             event.setDeathMessage(message);
         }
         else
         {
             this.deaths.put(player, deaths);
+            
+            if(!this.regenerationStartTime.containsKey(player))
+            {   // The player is not currently regenerating a life, start regenerating the life just lost.
+                this.regenerationStartTime.put(player, Utils.getCurrentTime());
+            }
             
             String message = event.getDeathMessage() + "\n" + Utils.prepareMessage("broadcasts.died", 
                 "%worldGroup", this.getWorldGroup(),
@@ -210,8 +217,14 @@ public class WorldManager implements ConfigurationSerializable
         
         long banishUntil = (long) (Utils.getCurrentTime() + secondsPerDay * banishTime);
         
+        // Set banished
         this.banishedUntil.put(player, banishUntil);
-        this.deaths.put(player, 0);
+        
+        // Reset deaths
+        this.deaths.remove(player);
+        
+        // Reset life regeneration
+        this.regenerationStartTime.remove(player);
         
         if(!player.isDead())
         {
@@ -308,46 +321,23 @@ public class WorldManager implements ConfigurationSerializable
         
         if(worldGroup.equals(this.worldGroup))
         {
-            Date date = new Date(this.banishedUntil(player)*1000);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeZone(TimeZone.getTimeZone(PluginState.getPlugin().getConfig().getString("timezone")));
-            calendar.setTime(date);
+            StringBuilder year = new StringBuilder();
+            StringBuilder month = new StringBuilder();
+            StringBuilder day = new StringBuilder();
+            StringBuilder hour = new StringBuilder();
+            StringBuilder minute = new StringBuilder();
+            StringBuilder second = new StringBuilder();
+            Utils.prepareTimeStrings(this.banishedUntil(player), year, month, day, hour, minute, second);
             
-            String year = calendar.get(Calendar.YEAR)+"";
-            String month = (calendar.get(Calendar.MONTH)+1)+"";
-            if(month.length() == 1)
-            {
-                month = "0"+month;
-            }
-            String day = calendar.get(Calendar.DAY_OF_MONTH)+"";
-            if(day.length()==1)
-            {
-                day = "0"+day;
-            }
-            String hours = calendar.get(Calendar.HOUR_OF_DAY)+"";
-            if(hours.length()==1)
-            {
-                hours = "0"+hours;
-            }
-            String minutes = calendar.get(Calendar.MINUTE)+"";
-            if(minutes.length()==1)
-            {
-                minutes = "0"+minutes;
-            }
-            String seconds = calendar.get(Calendar.SECOND)+"";
-            if(seconds.length()==1)
-            {
-                seconds = "0"+seconds;
-            }
             player.sendMessage(Utils.prepareMessage("whispers.banished", 
                 "%worldGroup", this.getWorldGroup(),
                 "%worldGroupAlias", this.getWorldGroupAlias(),
                 "%year", year,
                 "%month", month,
                 "%day", day,
-                "%hours", hours,
-                "%minutes", minutes,
-                "%seconds", seconds));
+                "%hours", hour,
+                "%minutes", minute,
+                "%seconds", second));
             
             if(event == null)
             {
@@ -399,6 +389,16 @@ public class WorldManager implements ConfigurationSerializable
     }
     
     /**
+     * Gets whether life regeneration is enabled.
+     * @return True if life regeneration is enabled for this world group,
+     * false otherwise.
+     */
+    public boolean isRegenerationEnabled()
+    {
+        return this.regeneration;
+    }
+    
+    /**
      * Gets the number of lives players have on this world group.
      * @return The number of lives players have on this world group.
      */
@@ -423,6 +423,8 @@ public class WorldManager implements ConfigurationSerializable
      */
     public int getLivesLeft(Player player)
     {
+        this.regeneration(player);
+        
         int deaths = 0;
         if(this.deaths.containsKey(player))
         {
@@ -430,6 +432,65 @@ public class WorldManager implements ConfigurationSerializable
         }
         
         return this.numLives-deaths;
+    }
+    
+    /**
+     * Handle life regeneration.
+     * @param player The player to handle life regeneration for.
+     */
+    private void regeneration(Player player)
+    {
+        if(!this.regeneration)
+        {   // Life regeneration is disabled.
+            return;
+        }
+        
+        if(!this.deaths.containsKey(player) || this.deaths.get(player) <= 0)
+        {   // The player has not died, and thus has no lives to regenerate.
+            this.regenerationStartTime.remove(player);
+            return;
+        }
+        
+        final long secondsPerDay = 60*60*24; // 60 seconds per minute, 60 minutes per hour, 24 hours per day
+        long regenerationTime = (long) (this.regenerationTime * secondsPerDay);
+        
+        if(this.regenerationStartTime.containsKey(player))
+        {   // The player has a life to regenerate.
+            long regenerationStartTime = this.regenerationStartTime.get(player);
+            
+            if(regenerationStartTime + regenerationTime <= Utils.getCurrentTime())
+            {   // The player should regenerate a life now.
+                
+                this.deaths.put(player, this.deaths.get(player)-1);
+                if(this.deaths.get(player) > 0)
+                {   // The player has another live to regenerate, even after the regeneration that just finished.
+                    this.regenerationStartTime.put(player, regenerationStartTime + regenerationTime);
+                    
+                    this.regeneration(player);
+                }
+                else
+                {   // The player has no more lives to regenerate.
+                    this.regenerationStartTime.remove(player);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Get the time a player will finish regenerating a life at, or -1 
+     * if the player is not currently regenerating a life.
+     * @param player The player to get the regeneration time for.
+     * @return The time the player will finish regenerating a life at,
+     * or -1 if the player is not currently regenerating a life.
+     */
+    public long regenerationAt(Player player)
+    {
+        if(this.regenerationStartTime.containsKey(player))
+        {   // The player has a life to regenerate.
+            return this.regenerationStartTime.get(player);
+        }
+        
+        return -1;
     }
     
     /*
