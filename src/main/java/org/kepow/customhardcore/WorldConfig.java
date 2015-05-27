@@ -169,18 +169,30 @@ public class WorldConfig
      * specified.
      * @param group The world group to get the configuration option for.
      * @param option The option's option key to get the value for.
+     * @param defaults Map containing the default options that will be used
+     * if both the group in question and the default group do not specify the
+     * options explicitly. 
      * @return The value of the configuration option.
      */
-    private <T> T get(String group, String option)
+    private <T> T get(String group, String option, Map<String, Object> defaults)
     {
-        if(groupsConfig.get(group).containsKey(option))
+        if(groupsConfig.get(group).containsKey(option) || option == "alias")
         {
+            T ret = (T) groupsConfig.get(group).get(option);
+            if(ret == null)
+            {   // Alias is not set; return group name
+                return (T) group;
+            }
             return (T) groupsConfig.get(group).get(option);    
         }
-        else
+        else if(groupsConfig.get(DEFAULT_GROUP).containsKey(option))
         {
             // Get default group setting
             return (T) groupsConfig.get(DEFAULT_GROUP).get(option);
+        }
+        else
+        {
+            return (T) defaults.get(option);
         }
     }
     
@@ -192,7 +204,7 @@ public class WorldConfig
      */
     public boolean getEnabled(String group)
     {
-        return this.get(group, "enabled");
+        return this.get(group, "enabled", Default.VALUES);
     }
     
     /**
@@ -203,7 +215,7 @@ public class WorldConfig
      */
     public int getLives(String group)
     {
-        return this.get(group, "lives");
+        return this.get(group, "lives", Default.VALUES);
     }
 
     /**
@@ -214,7 +226,7 @@ public class WorldConfig
      */
     public double getBanishTime(String group)
     {
-        return this.get(group, "banishTime");
+        return this.get(group, "banishTime", Default.VALUES);
     }
     
     /**
@@ -225,7 +237,7 @@ public class WorldConfig
      */
     public Location getBanishLocation(String group)
     {
-        MemorySection banishLocationSection = (MemorySection) this.get(group, "banishLocation");
+        MemorySection banishLocationSection = (MemorySection) this.get(group, "banishLocation", Default.VALUES);
         Map<String, Object> banishLocation = banishLocationSection.getValues(false);
         
         String world = (String) banishLocation.get("world");

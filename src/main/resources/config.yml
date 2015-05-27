@@ -7,6 +7,7 @@ worldConfig:
                 enabled: false
                 lives: 1
                 banishTime: 3.0
+                liveRegenerationTime: 0.0 
                 banishLocation:
                     world: world
                     x: 240.5
