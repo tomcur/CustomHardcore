@@ -55,6 +55,7 @@ messages:
         livesInfoRegenerationEntry: "  - &61&r life regenerates at &date%"  
         banish: "You successfully banished &player% from &worldGroup%."
         unbanish: "You successfully unbanished &player% from &worldGroup%." 
+        reload: "You successfully reloaded CustomHardcore's configuration."
     broadcasts:
         banished: "&player% has been banished for &banishedTime% &days|days% from &worldGroup%.\n&player% can join again after &banishedUntil%."
         died: "&player% has &lives% &livesWord|lives% remaining in &worldGroup%."

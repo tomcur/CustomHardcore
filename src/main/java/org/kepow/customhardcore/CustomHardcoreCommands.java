@@ -278,7 +278,7 @@ public class CustomHardcoreCommands
     @Command(aliases={"banish", "b"}, desc="Banish a player", usage="<player> - player to banish. [group] - The group to banish the player from.", min = 1, max = 2)
     public static void banish(final CommandContext args, CommandSender sender) throws Exception 
     {
-        if(!sender.hasPermission("customhardcore.admin"))
+        if(!sender.hasPermission("customhardcore.moderator.banish"))
         {
             throw(new CommandPermissionsException());
         }
@@ -309,7 +309,7 @@ public class CustomHardcoreCommands
     @Command(aliases={"unbanish", "unb", "u"}, desc="Unbanish a player", usage="<player> - player to banish. [group] - The group to unbanish the player from.", min = 1, max = 2)
     public static void unbanish(final CommandContext args, CommandSender sender) throws Exception 
     {
-        if(!sender.hasPermission("customhardcore.admin"))
+        if(!sender.hasPermission("customhardcore.moderator.unbanish"))
         {
             throw(new CommandPermissionsException());
         }
@@ -335,6 +335,18 @@ public class CustomHardcoreCommands
             "%worldGroup", manager.getWorldGroup(),
             "%worldGroupAlias", manager.getWorldGroupAlias(),
             "%player", targetPlayer.getName()));
+    }
+    
+    @Command(aliases="reload", desc="Reload the configuration (but not the data!)", min = 0, max = 0)
+    public static void reload(final CommandContext args, CommandSender sender) throws Exception 
+    {
+        if(!sender.hasPermission("customhardcore.admin.reload"))
+        {
+            throw(new CommandPermissionsException());
+        }
+        
+        PluginState.getPlugin().reload();
+        sender.sendMessage(Utils.prepareMessage("commands.reload"));
     }
     
     private static Player getPlayer(CommandSender sender, String target) throws Exception
