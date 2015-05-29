@@ -86,37 +86,44 @@ public class Utils
         calendar.setTimeZone(TimeZone.getTimeZone(PluginState.getPlugin().getConfig().getString("timezone")));
         calendar.setTime(date);
         
-        year.append(calendar.get(Calendar.YEAR));
+        int yearV = calendar.get(Calendar.YEAR);
+        int monthV = calendar.get(Calendar.MONTH);
+        int dayV = calendar.get(Calendar.DAY_OF_MONTH);
+        int hourV = calendar.get(Calendar.HOUR_OF_DAY);
+        int minuteV = calendar.get(Calendar.MINUTE);
+        int secondV = calendar.get(Calendar.SECOND);
         
-        month.append(calendar.get(Calendar.MONTH)+1);
-        if(month.length() == 1)
-        {
-            month.insert(0, "0");
-        }
+        year.append(yearV);
         
-        day.append(calendar.get(Calendar.DAY_OF_MONTH));
-        if(day.length() == 1)
+        if(monthV + 1 < 10)
         {
-            day.insert(0, "0");
+            month.append("0");
         }
+        month.append(monthV);
         
-        hour.append(calendar.get(Calendar.HOUR_OF_DAY));
-        if(hour.length() == 1)
+        if(dayV < 10)
         {
-            hour.insert(0, "0");
+            day.append("0");
         }
+        day.append(dayV);
         
-        minute.append(calendar.get(Calendar.MINUTE));
-        if(minute.length() == 1)
+        if(hourV < 10)
         {
-            minute.insert(0, "0");
+            hour.append("0");
         }
+        hour.append(hourV);
         
-        second.append(calendar.get(Calendar.SECOND));
-        if(second.length()==1)
+        if(minuteV < 10)
         {
-            second.insert(0, "0");
+            minute.append("0");
         }
+        minute.append(minuteV);
+        
+        if(secondV < 10)
+        {
+            second.append("0");
+        }
+        second.append(secondV);
     }
     
     

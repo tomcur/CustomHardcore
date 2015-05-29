@@ -64,9 +64,38 @@ public class CustomHardcore extends JavaPlugin implements Listener
         this.saveDefaultConfig();
         PluginState.prepareCustomConfigs();
         
-        // Load world confiugration and register it with the plugin state
+        // Load world configuration and register it with the plugin state
         WorldConfig worldConfig = new WorldConfig(getConfig().getConfigurationSection("worldConfig").getValues(false));
         PluginState.setWorldConfig(worldConfig);
+        
+        setWorldManagers();
+        
+        // Get Multiverse if it is loaded
+        JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+        if(plugin != null)
+        {
+            //MultiverseCore mv = (MultiverseCore) plugin;
+            multiverseCore = plugin;
+            //mvWorldManager = mv.getMVWorldManager();
+            
+        }
+        // Set up scheduled task
+        final long sleep = 20*60*1;
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(PluginState.getPlugin(), new Runnable()
+        { 
+            public void run() 
+            {
+                save();
+            } 
+        }, sleep, sleep);
+    }
+    
+    /**
+     * Set the world managers (i.e., "load" them from the configuration).
+     */
+    private void setWorldManagers()
+    {
+        WorldConfig worldConfig = PluginState.getWorldConfig();
         
         // Populate world managers
         worldManagers = new HashMap<String, WorldManager>();
@@ -97,25 +126,25 @@ public class CustomHardcore extends JavaPlugin implements Listener
                 worldManagers.remove(key);
             }
         }
+    }
+    
+    /**
+     * Reloads the plugin configuration.
+     */
+    public void reload()
+    {
+        // First reload the main configuration
+        reloadConfig();
         
-        // Get Multiverse if it is loaded
-        JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-        if(plugin != null)
-        {
-            //MultiverseCore mv = (MultiverseCore) plugin;
-            multiverseCore = plugin;
-            //mvWorldManager = mv.getMVWorldManager();
-            
-        }
-        // Set up scheduled task
-        final long sleep = 20*60*1;
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(PluginState.getPlugin(), new Runnable()
-        { 
-            public void run() 
-            {
-                save();
-            } 
-        }, sleep, sleep);
+        // Reload the world configuration and register it with the plugin state
+        WorldConfig worldConfig = new WorldConfig(getConfig().getConfigurationSection("worldConfig").getValues(false));
+        PluginState.setWorldConfig(worldConfig);
+        
+        // Reload the world manager data
+        PluginState.getDataCustomConfig().reloadCustomConfig();
+        
+        // Re-set the reloaded world managers
+        setWorldManagers();
     }
     
     /**
@@ -198,7 +227,6 @@ public class CustomHardcore extends JavaPlugin implements Listener
     public Map<String, WorldManager> getHardcoreWorldManagers()
     {
         HashMap<String, WorldManager> hardcore = new HashMap<String, WorldManager>();
-        Map<String, WorldManager> worldManagers = PluginState.getPlugin().getWorldManagers();
         for(WorldManager worldManager : worldManagers.values())
         {
             if(worldManager.isEnabled())
