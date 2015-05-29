@@ -22,7 +22,7 @@ public class Default
         values.put("enabled", false);
         values.put("lives", 1);
         values.put("banishTime", 3.0);
-        values.put("lifeRegenerationTime", 3.0);
+        values.put("lifeRegenerationTime", 0.0);
         
         Map<String, Object> banishLocation = new HashMap<String, Object>();
         banishLocation.put("world", "world");

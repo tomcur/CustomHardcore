@@ -217,7 +217,7 @@ public class WorldConfig
      */
     public int getLives(String group)
     {
-        return this.get(group, "lives", Default.VALUES);
+        return ((Number) this.get(group, "lives", Default.VALUES)).intValue();
     }
 
     /**
@@ -229,7 +229,7 @@ public class WorldConfig
      */
     public double getBanishTime(String group)
     {
-        return this.get(group, "banishTime", Default.VALUES);
+        return ((Number) this.get(group, "banishTime", Default.VALUES)).doubleValue();
     }
     
     /**
@@ -241,7 +241,7 @@ public class WorldConfig
      */
     public double getLifeRegenerationTime(String group)
     {
-        return this.get(group, "lifeRegenerationTime", Default.VALUES);
+        return ((Number) this.get(group, "lifeRegenerationTime", Default.VALUES)).doubleValue();
     }
     
     /**
@@ -253,15 +253,30 @@ public class WorldConfig
      */
     public Location getBanishLocation(String group)
     {
-        MemorySection banishLocationSection = (MemorySection) this.get(group, "banishLocation", Default.VALUES);
-        Map<String, Object> banishLocation = banishLocationSection.getValues(false);
-        
-        String world = (String) banishLocation.get("world");
-        double x = ((Number) banishLocation.get("x")).doubleValue();
-        double y = ((Number) banishLocation.get("y")).doubleValue();
-        double z = ((Number) banishLocation.get("z")).doubleValue();
-        
-        return new Location(Bukkit.getWorld(world), x, y, z);
+        Object banishLocationObj = this.get(group, "banishLocation", Default.VALUES);
+        if(banishLocationObj instanceof MemorySection)
+        {
+            MemorySection banishLocationSection = (MemorySection) banishLocationObj;
+            Map<String, Object> banishLocation = banishLocationSection.getValues(false);
+            
+            String world = (String) banishLocation.get("world");
+            double x = ((Number) banishLocation.get("x")).doubleValue();
+            double y = ((Number) banishLocation.get("y")).doubleValue();
+            double z = ((Number) banishLocation.get("z")).doubleValue();
+            
+            return new Location(Bukkit.getWorld(world), x, y, z);
+        }
+        else
+        {
+            Map<String, Object> banishLocation = (Map<String, Object>) banishLocationObj;
+            
+            String world = (String) banishLocation.get("world");
+            double x = ((Number) banishLocation.get("x")).doubleValue();
+            double y = ((Number) banishLocation.get("y")).doubleValue();
+            double z = ((Number) banishLocation.get("z")).doubleValue();
+            
+            return new Location(Bukkit.getWorld(world), x, y, z);
+        }
     }
 
     

@@ -87,7 +87,7 @@ public class Utils
         calendar.setTime(date);
         
         int yearV = calendar.get(Calendar.YEAR);
-        int monthV = calendar.get(Calendar.MONTH);
+        int monthV = calendar.get(Calendar.MONTH)+1;
         int dayV = calendar.get(Calendar.DAY_OF_MONTH);
         int hourV = calendar.get(Calendar.HOUR_OF_DAY);
         int minuteV = calendar.get(Calendar.MINUTE);
