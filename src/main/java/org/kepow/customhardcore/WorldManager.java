@@ -100,7 +100,7 @@ public class WorldManager implements ConfigurationSerializable
             for(String uuid : regenerationStartTime.keySet())
             {
                 UUID u = UUID.fromString(uuid);
-                this.regenerationStartTime.put(PluginState.getPlugin().getServer().getOfflinePlayer(u), regenerationStartTime.get(uuid));
+                this.regenerationStartTime.put(PluginState.getPlugin().getServer().getOfflinePlayer(u), ((Number) regenerationStartTime.get(uuid)).longValue());
             }
         }
     }
@@ -487,7 +487,10 @@ public class WorldManager implements ConfigurationSerializable
     {
         if(this.regenerationStartTime.containsKey(player))
         {   // The player has a life to regenerate.
-            return this.regenerationStartTime.get(player);
+            final long secondsPerDay = 60*60*24; // 60 seconds per minute, 60 minutes per hour, 24 hours per day
+            long regenerationTime = (long) (this.regenerationTime * secondsPerDay);
+            
+            return this.regenerationStartTime.get(player) + regenerationTime;
         }
         
         return -1;
@@ -502,6 +505,7 @@ public class WorldManager implements ConfigurationSerializable
         Map<String, Object> map = new HashMap<String, Object>();
         
         Map<String, Long> banishedUntil = new HashMap<String, Long>();
+        Map<String, Long> regenerationStartTime = new HashMap<String, Long>();
         Map<String, Integer> deaths = new HashMap<String, Integer>();
         
         
@@ -510,14 +514,21 @@ public class WorldManager implements ConfigurationSerializable
             banishedUntil.put(key.getUniqueId().toString(), this.banishedUntil.get(key));
         }
         
+        for(OfflinePlayer key : this.regenerationStartTime.keySet())
+        {
+            regenerationStartTime.put(key.getUniqueId().toString(), this.regenerationStartTime.get(key));
+        }
+        
         for(OfflinePlayer key : this.deaths.keySet())
         {
             deaths.put(key.getUniqueId().toString(), this.deaths.get(key));
         }
         
         map.put("worldGroup", worldGroup);
-        map.put("deaths", deaths);
         map.put("banishedUntil", banishedUntil);
+        map.put("regenerationStartTime", regenerationStartTime);
+        map.put("deaths", deaths);
+        
         return map;
     }
 }
