@@ -17,8 +17,9 @@ worldConfig:
             - HardcoreWorld_the_end
             config:
                 enabled: true
-                lives: 1
+                lives: 2
                 banishTime: 3.0
+				lifeRegenerationTime: 7.0
                 banishLocation:
                     world: world
                     x: 240.5
