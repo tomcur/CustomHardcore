@@ -3,7 +3,7 @@
   <groupId>org.kepow</groupId>
   <artifactId>CustomHardcore</artifactId>
   <name>CustomHardcore</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   
   
@@ -37,12 +37,17 @@
               <artifactSet>
                 <includes>
                   <include>com.sk89q:command-framework-bukkit</include>
+                  <include>org.mcstats.*:*</include>
                 </includes>
               </artifactSet>
               <relocations>
                 <relocation>
                   <pattern>com.sk89q:command-framework-bukkit</pattern>
                   <shadedPattern>org.kepow.customhardcore.commands</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.mcstats</pattern>
+                  <shadedPattern>org.kepow.customhardcore</shadedPattern>
                 </relocation>
               </relocations>
               </configuration>
@@ -69,6 +74,10 @@
       <id>repo.oc.tc</id>
       <url>http://repo.oc.tc/content/repositories/public/</url>
     </repository>
+    <repository>
+      <id>plugin-metrics</id>
+      <url>http://repo.mcstats.org/content/repositories/public</url>
+    </repository>
   </repositories>
   
   <dependencies>
@@ -93,6 +102,13 @@
       <groupId>com.sk89q</groupId>
       <artifactId>command-framework-bukkit</artifactId>
       <version>0.5-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.mcstats.bukkit</groupId>
+      <artifactId>metrics</artifactId>
+      <version>R7</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

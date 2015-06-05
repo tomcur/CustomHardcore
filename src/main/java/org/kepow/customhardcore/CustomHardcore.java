@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 import com.sk89q.bukkit.util.CommandsManagerRegistration;
 import com.sk89q.minecraft.util.commands.ChatColor;
@@ -88,6 +89,17 @@ public class CustomHardcore extends JavaPlugin implements Listener
                 save();
             } 
         }, sleep, sleep);
+        
+        // Send metrics
+        try 
+        {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } 
+        catch (Exception e) 
+        {
+            
+        }
     }
     
     /**
